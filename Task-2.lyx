@@ -1,0 +1,696 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+GRIP Task 2: Prediction using Unsupervised ML
+\end_layout
+
+\begin_layout Author
+Name: Debartha Paul
+\end_layout
+
+\begin_layout Section*
+Importing libraries and visualising the data
+\end_layout
+
+\begin_layout Standard
+We first load the libraries required for our work and then we read the dataset
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Luckily, we do not need any other library for this work.
+\end_layout
+
+\begin_layout Plain Layout
+
+#Reading the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+df<-read.csv('D:
+\backslash
+
+\backslash
+Important Documents
+\backslash
+
+\backslash
+Internship
+\backslash
+
+\backslash
+Task-2
+\backslash
+
+\backslash
+Iris.csv',header=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(df)#dimensions of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+names(df)#column names of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+head(df)#a brief preview of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(df)#a brief summary of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Determining the value of k
+\end_layout
+
+\begin_layout Standard
+We then determine the value of 
+\family typewriter
+k
+\family default
+(optimum number of clusters) for the KMeans clustering.
+ We us the Elbow Method for determining the value of 
+\family typewriter
+k
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Finding the optimum value of clusters
+\end_layout
+
+\begin_layout Plain Layout
+
+twss<-sapply(1:10,function(k){kmeans(df[,-c(1,6)],k,iter.max=300,nstart=20)$tot.wi
+thinss})
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(c(1:10),twss,type='b',lwd=2,col='dark blue',pch=16,
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylab='Total within Sum of Squares',
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlab='No.
+ of clusters',
+\end_layout
+
+\begin_layout Plain Layout
+
+	main='The Elbow Method')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+From the above graph, we note that the the elbow occurs at 3.
+\end_layout
+
+\begin_layout Section*
+Applying to the dataset
+\end_layout
+
+\begin_layout Standard
+We now apply the kmeans method to our dataset, with the number of clusters
+ as 3.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Applying the kmeans to our dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+KMeans<-kmeans(df[,-c(1,6)],3,iter.max=300,nstart=20)
+\end_layout
+
+\begin_layout Plain Layout
+
+cluster<-fitted(KMeans,'classes')
+\end_layout
+
+\begin_layout Plain Layout
+
+centroids<-as.data.frame(unique(fitted(KMeans,'centers')))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Visualising the clusters
+\end_layout
+
+\begin_layout Standard
+We visualise the clusters in the form of two scatterplots.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#1st scatterplot
+\end_layout
+
+\begin_layout Plain Layout
+
+par(bg='light blue')
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df[cluster==1,]$SepalLengthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	df[cluster==1,]$SepalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$SepalLengthCm),max(df$SepalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$SepalWidthCm),max(df$SepalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='red',pch=16,main='Sepal Width vs.
+ Sepal Length',
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlab='Sepal Length',ylab='Sepal Width')
+\end_layout
+
+\begin_layout Plain Layout
+
+par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df[cluster==2,]$SepalLengthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	df[cluster==2,]$SepalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$SepalLengthCm),max(df$SepalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$SepalWidthCm),max(df$SepalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='blue',pch=16,xaxt='n',yaxt='n',xlab=NA,ylab=NA)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df[cluster==3,]$SepalLengthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	df[cluster==3,]$SepalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$SepalLengthCm),max(df$SepalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$SepalWidthCm),max(df$SepalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='dark green',pch=16,xaxt='n',yaxt='n',xlab=NA,ylab=NA)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(centroids$SepalLengthCm,centroids$SepalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$SepalLengthCm),max(df$SepalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$SepalWidthCm),max(df$SepalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='yellow',pch=16,cex=2,xaxt='n',yaxt='n',xlab=NA,ylab=NA)
+\end_layout
+
+\begin_layout Plain Layout
+
+legend(x=7.1,y=4.4,c('Cluster 1','Cluster 2','Cluster 3','Centroids'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=c('red','blue','dark green','yellow'),pch=16)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#2nd scatterplot
+\end_layout
+
+\begin_layout Plain Layout
+
+par(bg='light green')
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df[cluster==1,]$PetalLengthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	df[cluster==1,]$PetalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$PetalLengthCm),max(df$PetalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$PetalWidthCm),max(df$PetalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='red',pch=16,main='Petal Width vs.
+ Petal Length',
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlab='Petal Length',ylab='Petal Width')
+\end_layout
+
+\begin_layout Plain Layout
+
+par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df[cluster==2,]$PetalLengthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	df[cluster==2,]$PetalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$PetalLengthCm),max(df$PetalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$PetalWidthCm),max(df$PetalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='blue',pch=16,xaxt='n',yaxt='n',xlab=NA,ylab=NA)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(df[cluster==3,]$PetalLengthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	df[cluster==3,]$PetalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$PetalLengthCm),max(df$PetalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$PetalWidthCm),max(df$PetalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='dark green',pch=16,xaxt='n',yaxt='n',xlab=NA,ylab=NA)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(centroids$PetalLengthCm,centroids$PetalWidthCm,
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlim=c(min(df$PetalLengthCm),max(df$PetalLengthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(df$PetalWidthCm),max(df$PetalWidthCm)),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col='yellow',pch=16,cex=2,xaxt='n',yaxt='n',xlab=NA,ylab=NA)
+\end_layout
+
+\begin_layout Plain Layout
+
+legend(x=1,y=2.5,c('Cluster 1','Cluster 2','Cluster 3','Centroids'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=c('red','blue','dark green','yellow'),pch=16)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, we create a table summarising the clusters.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Summary Table
+\end_layout
+
+\begin_layout Plain Layout
+
+table(KMeans$cluster,df$Species)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+From the table above, we find that the members of Iris-setosa were clustered
+ correctly.
+ However, there is some discrepancy regarding the clusters of the other
+ two species: Iris-versicolor and Iris-virginica
+\end_layout
+
+\end_body
+\end_document
