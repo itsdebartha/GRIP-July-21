@@ -1,0 +1,1189 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+GRIP Task 3: Exploratory Data Analysis - Retail
+\end_layout
+
+\begin_layout Author
+Name: Debartha Paul
+\end_layout
+
+\begin_layout Section*
+Importing libraries and visualising the data
+\end_layout
+
+\begin_layout Standard
+We first load the libraries required for our work and then read the dataset
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Importing the necessary libraries
+\end_layout
+
+\begin_layout Plain Layout
+
+library(RColorBrewer)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Reading the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+df<-read.csv('D:
+\backslash
+
+\backslash
+Important Documents
+\backslash
+
+\backslash
+Internship
+\backslash
+
+\backslash
+Task-3
+\backslash
+
+\backslash
+SampleSuperstore.csv',header=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(df)#the dimensions of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+head(df)#a brief preview of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+names(df)#colimn names of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+summary(df)#a brief summary of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+df<-df[!duplicated(df),]#removing duplicate entries
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Correlation between various observations
+\end_layout
+
+\begin_layout Standard
+We then make a correlation matrix to know if there is any significant correlatio
+n between any two columns
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cor_mat<-round(cor(df[,sapply(df,class)!='character']),3)
+\end_layout
+
+\begin_layout Plain Layout
+
+cor_mat#The correlation matrix
+\end_layout
+
+\begin_layout Plain Layout
+
+cor_mat[lower.tri(cor_mat,diag=T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+max(abs(cor_mat))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We find that the maximum correlation coefficient is 
+\begin_inset Formula $0.479$
+\end_inset
+
+ which implies there is no significant correlation between the columns of
+ the data.
+\end_layout
+
+\begin_layout Section*
+Exploratory Data Analysis
+\end_layout
+
+\begin_layout Standard
+We proceed to the analysis of the dataset
+\end_layout
+
+\begin_layout Subsection*
+Division based on different attributes
+\end_layout
+
+\begin_layout Standard
+We first plot some graphs for division of the data based on various attributes
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_div<-table(df$Category)
+\end_layout
+
+\begin_layout Plain Layout
+
+pie(cat_div,col=c('#FF6666','#0099CC','#5eb58a'),main='Division by Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+seg_div<-table(df$Segment)
+\end_layout
+
+\begin_layout Plain Layout
+
+pie(seg_div,col=c('#549dc7','#cc689a','#c9b36d'),main='Division by Segment')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+state_div<-table(df$State)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(state_div,las=2,cex.names=0.5,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=hcl.colors(n=length(unique(df$State)),"dynamic"),
+\end_layout
+
+\begin_layout Plain Layout
+
+		ylab='Counts',main='Division by States')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_Subcat<-table(df$Category,df$Sub.Category)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(cat_Subcat,las=2,col=c('#FF6666','#0099CC','#5eb58a'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		cex.names=0.75,main='Division by Subcategory',ylab='Count')
+\end_layout
+
+\begin_layout Plain Layout
+
+legend('topright',rownames(cat_Subcat),fill=c('#FF6666','#0099CC','#5eb58a'),cex
+=0.75)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Histograms
+\end_layout
+
+\begin_layout Standard
+We draw some histograms to find out about the nature of the distribution
+ of the data
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfcol=c(3,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:ncol(df))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	if (class(df[,i])!='character')
+\end_layout
+
+\begin_layout Plain Layout
+
+	{
+\end_layout
+
+\begin_layout Plain Layout
+
+		hist(df[,i],xlab=names(df)[i],main=paste('Histogram of ',
+\end_layout
+
+\begin_layout Plain Layout
+
+			names(df)[i]),col='#313b69')
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The above histograms suggest that the data is not normally distributed.
+\end_layout
+
+\begin_layout Subsection*
+Table of Quantity by Shipping mode
+\end_layout
+
+\begin_layout Standard
+Next we create a table for the quantity of items sold categorised by mode
+ of shipping
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+table(df$Ship.Mode,df$Quantity)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Pairs plot
+\end_layout
+
+\begin_layout Standard
+A pairs plot gives a detailed graphical summary regarding the relationships
+ between the different variables in the data.
+ We create a pairs plot for this dataset categorised by Sub-Category.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pairs(~df$Postal.Code+df$Sales+df$Quantity+df$Discount+df$Profit,
+\end_layout
+
+\begin_layout Plain Layout
+
+		labels=c('Postal Code','Sales','Quantity','Discount','Profit'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=hcl.colors(length(unique(df$Sub.Category)),'dark 3'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		pch=19,oma=c(3,5,3,12))
+\end_layout
+
+\begin_layout Plain Layout
+
+par(xpd=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+legend("bottomright",fill=hcl.colors(length(unique(df$Sub.Category)),'dark
+ 3'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		legend=c(unique(df$Sub.Category)),cex=0.5,title='Sub-Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Heat maps
+\end_layout
+
+\begin_layout Standard
+We then draw some heat maps for representing sales and profits by different
+ attributes over all the states and cities
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_city_sales<-ftable(with(df,tapply(Sales,list(Category,City),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_city_sales[which(is.na(cat_city_sales)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(cat_city_sales)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Sales in City by Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_state_sales<-ftable(with(df,tapply(Sales,list(Category,State),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_state_sales[which(is.na(cat_state_sales)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(cat_state_sales)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Sales in States by Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_city_pro<-ftable(with(df,tapply(Profit,list(Category,City),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_city_pro[which(is.na(cat_city_pro)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(cat_city_pro)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Profit in City by Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_state_pro<-ftable(with(df,tapply(Profit,list(Category,State),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+cat_state_pro[which(is.na(cat_state_pro)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(cat_state_pro)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Profit in State by Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+seg_city_pro<-ftable(with(df,tapply(Profit,list(Segment,City),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+seg_city_pro[which(is.na(seg_city_pro)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(seg_city_pro)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Profit in City by Segment')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+seg_state_pro<-ftable(with(df,tapply(Profit,list(Segment,State),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+seg_state_pro[which(is.na(seg_state_pro)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(seg_state_pro)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Profit in State by Segment')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+subcat_city_pro<-ftable(with(df,tapply(Profit,list(Sub.Category,City),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+subcat_city_pro[which(is.na(subcat_city_pro)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(subcat_city_pro)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Profit in City by Sub-Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+subcat_state_pro<-ftable(with(df,tapply(Profit,list(Sub.Category,State),sum)))
+\end_layout
+
+\begin_layout Plain Layout
+
+subcat_state_pro[which(is.na(subcat_state_pro)==T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+data<-as.matrix(subcat_state_pro)
+\end_layout
+
+\begin_layout Plain Layout
+
+heatmap(t(data),Colv=NA,Rowv=NA,cexCol=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=colorRampPalette(brewer.pal(9,"Blues"))(25),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Heatmap for Profit in State by Sub-Category')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Sales and Profit
+\end_layout
+
+\begin_layout Standard
+Finally, we draw a sales and profit chart by different Sub-Categories
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+Profit<-as.data.frame(tapply(df$Profit,df$Sub.Category,sum))
+\end_layout
+
+\begin_layout Plain Layout
+
+Sales<-as.data.frame(tapply(df$Sales,df$Sub.Category,sum))
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(t(as.matrix(cbind(Profit,Sales))),las=2,col=c('#eb9113','#1b68bf'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		beside=T,main='Sales and Profit by Sub-Category',cex.names=0.75)
+\end_layout
+
+\begin_layout Plain Layout
+
+legend(x=0,y=320000,c('Sales','Profit'),fill=c('#eb9113','#1b68bf'))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
