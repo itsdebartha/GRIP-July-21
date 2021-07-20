@@ -1,0 +1,1090 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+GRIP Task 4: Exploratory Data Analysis - Terrorism
+\end_layout
+
+\begin_layout Author
+Name: Debartha Paul
+\end_layout
+
+\begin_layout Section*
+Importing libraries and visualising the data
+\end_layout
+
+\begin_layout Standard
+We first load the libraries required for our work and then read the dataset.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+#Fortunately, we do not need to load any other library for this work
+\end_layout
+
+\begin_layout Plain Layout
+
+df<-read.csv('D:
+\backslash
+
+\backslash
+Important Documents
+\backslash
+
+\backslash
+Internship
+\backslash
+
+\backslash
+Task-4
+\backslash
+
+\backslash
+globalterrorismdb_0718dist.csv',
+\end_layout
+
+\begin_layout Plain Layout
+
+			header=T)#reading the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(df)#dimensions of the dataset
+\end_layout
+
+\begin_layout Plain Layout
+
+length(is.na(df))#number of 'na' values
+\end_layout
+
+\begin_layout Plain Layout
+
+names(df)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Exploratory Data Analysis
+\end_layout
+
+\begin_layout Standard
+We now move forward to our Exploratory Data Analysis part.
+\end_layout
+
+\begin_layout Subsection*
+Attacks by Year:
+\end_layout
+
+\begin_layout Standard
+The below chart describes the number of attacks by year
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+attack_year<-table(df$iyear)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(attack_year,type='b',main='Terrorism by Year',
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlab='Year',ylab='No.
+ of Incidents',pch=19)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+From the above chart, we observe that no.
+ of attacks increased over the years since 1970 till the early 90s.
+ However, there was a decline in the no.
+ of attacks till the late 90s.
+ Moving further, we obseve a steep incline in the no.
+ of attacks since the late 90s till 2014(which also has the highest number
+ of attacks in a calender year) and we note a decline in the no.
+ of attacks since then.
+\end_layout
+
+\begin_layout Subsection*
+Type of Attack by Year:
+\end_layout
+
+\begin_layout Standard
+We next look at the frequency of attacks over the years by their type
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+type_year<-cbind(unique(df$iyear),table(df$iyear,df$attacktype1_txt))
+\end_layout
+
+\begin_layout Plain Layout
+
+type_year<-type_year[order(type_year[,1]),]
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfrow=c(3,3))
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 2:ncol(type_year))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	plot(x=type_year[,1],y=type_year[,i],main=colnames(type_year)[i],
+\end_layout
+
+\begin_layout Plain Layout
+
+		xlab='Year',ylab='Incidents',type='l',cex.main=0.95,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=hcl.colors(9,'dark 2')[i-1])
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We notice some interesting patterns in the type of attacks over the years.
+ 
+\series bold
+Armed Assault
+\series default
+ saw an overall growth till the mid 90s with the no.
+ of cases dipping before rising steeply from the mid 2000s till 2014 and
+ then declining again.
+ 
+\series bold
+Assassination
+\series default
+ was very popular since the beginning with the no.
+ of cases rising in the till the early 90s before this type of attack faced
+ a drop.
+ However, since the late 90s, the no.
+ of cases corresponding to this type of attack increased (almost) exponentially
+ till the mid 2010s.
+ 
+\series bold
+Bombings/Explosions
+\series default
+ were somewhat common till the mid 2000s before gaining popularity as the
+ no.
+ of cases soared up till the mid 2010s.
+ It has seen a decline since then.
+ 
+\series bold
+Facility/Infrastructure Attacks
+\series default
+ gained popularity just before the 90s and then again since the mid 2000s.
+ 
+\series bold
+Hijacking
+\series default
+ has an uneven history with sometimes gaining popularity and sometimes not.
+ 
+\series bold
+Hostage Taking (Barricade Incident)
+\series default
+ was initially a very common form of attack until the mid 90s when these
+ incidents were significantly reduced.
+ However, since 2010, the no.
+ or these events rose at an increasing rate.
+ 
+\series bold
+Hostage Taking (Kidnapping)
+\series default
+ was initially a not-so-common form of attack.
+ However, it saw a steady increase and the no.
+ of cases leaped at a tremendous pace since the early 2000s.
+ 
+\series bold
+Unarmed Assault
+\series default
+ was very common in the mid 90s before subsiding in the 2000s.
+ However, since 2010, the no.
+ of cases of this type is on the rise.
+ 
+\series bold
+Unknown
+\series default
+ attacks gained popularity since the 2010s and has been on the rise since
+ then.
+\end_layout
+
+\begin_layout Subsection*
+Attack by Region:
+\end_layout
+
+\begin_layout Standard
+We next look at the frequency of attacks based on regions
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+attack_reg<-table(df$region_txt)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mar=c(10,4,4,1)+.1)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(attack_reg,las=2,cex.names=0.8,
+\end_layout
+
+\begin_layout Plain Layout
+
+	col=hcl.colors(nrow(attack_reg),'set 2'),
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylab='Count',main='Attacks by Region')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We find that the most affected region by terrorism in the world is 
+\series bold
+Middle East & North Africa
+\series default
+ followed closely by 
+\series bold
+South Asia
+\series default
+.
+ The third most affected region is 
+\series bold
+South America
+\series default
+, however, there's a big gap between the first second and the third.
+\end_layout
+
+\begin_layout Subsection*
+Target type:
+\end_layout
+
+\begin_layout Standard
+We next look at the most common targets of the terrorists by type
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mar=c(10,4,4,1)+.1)
+\end_layout
+
+\begin_layout Plain Layout
+
+targ_type<-table(df$targtype1_txt)
+\end_layout
+
+\begin_layout Plain Layout
+
+max_targ_type<-tail(sort(targ_type),5)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(max_targ_type,col=hcl.colors(5,'warm'),las=2,
+\end_layout
+
+\begin_layout Plain Layout
+
+		cex.names=0.8,main='Top 5 Targets')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We observe that 
+\series bold
+Private Citizens & Properties
+\series default
+ is the most popular target type for the terrorists.
+ However, violence against 
+\series bold
+Military
+\series default
+, 
+\series bold
+Police
+\series default
+, 
+\series bold
+Government(General)
+\series default
+ and 
+\series bold
+Business
+\series default
+ are also not uncommon.
+\end_layout
+
+\begin_layout Subsection*
+Attacks by Region over the years:
+\end_layout
+
+\begin_layout Standard
+We now look at the attacks over the years on various regions
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+reg_year<-table(df$region_txt,df$iyear)
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(x=colnames(reg_year),y=reg_year[1,],type='l',lwd=1.5,
+\end_layout
+
+\begin_layout Plain Layout
+
+	ylim=c(min(reg_year),max(reg_year)),xlim=c(1970,2017),
+\end_layout
+
+\begin_layout Plain Layout
+
+	col=hcl.colors(nrow(reg_year),'dark 2')[1],
+\end_layout
+
+\begin_layout Plain Layout
+
+	xlab='Year',ylab='No.
+ of Incidents',
+\end_layout
+
+\begin_layout Plain Layout
+
+	main='Incidents by Region')
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 2:nrow(reg_year))
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	par(new=T)
+\end_layout
+
+\begin_layout Plain Layout
+
+	plot(x=colnames(reg_year),y=reg_year[i,],type='l',lwd=1.5,
+\end_layout
+
+\begin_layout Plain Layout
+
+		ylim=c(min(reg_year),max(reg_year)),xlim=c(1970,2017),
+\end_layout
+
+\begin_layout Plain Layout
+
+		xaxt='n',yaxt='n',xlab=NA,ylab=NA,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=hcl.colors(nrow(reg_year),'dark 2')[i])
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+legend(x=1970,y=7000,rownames(reg_year),lwd=1.5,
+\end_layout
+
+\begin_layout Plain Layout
+
+		col=hcl.colors(nrow(reg_year),'dark 2'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		cex=0.5,title='Region')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We notice an interesting trend of attacks in various regions over the years.
+ While initially, 
+\series bold
+South America
+\series default
+ saw more unrests in the period between 1980 to 2000, 
+\series bold
+South Asia
+\series default
+ and 
+\series bold
+Middle East & North Africa
+\series default
+ saw a huge rise in terror activities.
+ We also notice that in the year 2014, there has been a global unrest, which
+ cause every single region to have a spike in the annual uprisings.
+\end_layout
+
+\begin_layout Subsection*
+Affected Country:
+\end_layout
+
+\begin_layout Standard
+The below graph shows the most attacked countries
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+country<-table(df$country_txt)
+\end_layout
+
+\begin_layout Plain Layout
+
+max_country<-tail(sort(country),5)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(max_country,col=hcl.colors(5,'warm'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		las=2,cex.names=0.8,main='Top 5 Countries by Attacks')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We find that 
+\series bold
+Iraq
+\series default
+ is the most affected country in the world.
+ It has a huge gap with 
+\series bold
+Pakistan
+\series default
+ which is placed second in the list.
+\end_layout
+
+\begin_layout Subsection*
+Weapons Used:
+\end_layout
+
+\begin_layout Standard
+In the below given graph, we aim to look at the weapons used by the terrorists
+ to carry out the attacks
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+weapon<-table(df$weaptype1_txt)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(weapon,xaxt='n',col=hcl.colors(length(unique(df$weaptype1_txt)),'dynamic'
+),
+\end_layout
+
+\begin_layout Plain Layout
+
+		main='Weapon Type')
+\end_layout
+
+\begin_layout Plain Layout
+
+legend('topright',rownames(weapon),
+\end_layout
+
+\begin_layout Plain Layout
+
+		fill=hcl.colors(length(unique(df$weaptype1_txt)),'dynamic'),
+\end_layout
+
+\begin_layout Plain Layout
+
+		cex=0.5,title='Weapon Type')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We note from the graph that the most common weapon used was 
+\series bold
+Explosives
+\series default
+, followed by 
+\series bold
+Firearms
+\series default
+.
+ These two itself consisted of the max percentage of weapons used for the
+ attacks.
+\end_layout
+
+\begin_layout Subsection*
+Casualties by Year:
+\end_layout
+
+\begin_layout Standard
+Finally, we look at the casualties by year globally
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+df[is.na(df$nkill),]$nkill<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+year_kill<-tapply(df$nkill,df$iyear,sum)
+\end_layout
+
+\begin_layout Plain Layout
+
+year_kill<-as.table(year_kill)
+\end_layout
+
+\begin_layout Plain Layout
+
+barplot(year_kill,las=2,cex.names=0.7,main='No.
+ of kills',
+\end_layout
+
+\begin_layout Plain Layout
+
+		xlab='Year',ylab='Kills',col='#a1383a')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Conclusions
+\end_layout
+
+\begin_layout Standard
+We find that in the year 2014, maximum number of deaths occurred across
+ the world.
+ This is in keeping with the fact that there was an increase in global terrorism
+ in that particular year.
+\end_layout
+
+\begin_layout Standard
+Further, looking at this graph, we can relate it to the graph of the Attacks
+ by Year.
+ We proceed to further find a correlation between the number of deaths and
+ the number of attacks in a calendar year.
+\end_layout
+
+\begin_layout Subsection*
+Correlation:
+\end_layout
+
+\begin_layout Standard
+We find the correlation coefficient between Casualties and No.
+ of Attacks
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+attack_kill<-cbind(year_kill,attack_year)
+\end_layout
+
+\begin_layout Plain Layout
+
+atk_cor<-cor(attack_kill)
+\end_layout
+
+\begin_layout Plain Layout
+
+atk_cor
+\end_layout
+
+\begin_layout Plain Layout
+
+atk_cor[lower.tri(atk_cor,diag=T)]<-0
+\end_layout
+
+\begin_layout Plain Layout
+
+max(atk_cor)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We observe that the correlation coefficient is pretty high, which implies
+ that the there is a direct relation between the Casualties and No.
+ of Attacks in a calendar year.
+\end_layout
+
+\begin_layout Subsection*
+Database Source:
+\end_layout
+
+\begin_layout Standard
+The below table lists the database source
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+source<-as.data.frame(table(df$dbsource))
+\end_layout
+
+\begin_layout Plain Layout
+
+colnames(source)<-c('Source','Freq')
+\end_layout
+
+\begin_layout Plain Layout
+
+source
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Inference
+\end_layout
+
+\begin_layout Standard
+We draw the following conclusions from the Data Analysis:
+\end_layout
+
+\begin_layout Itemize
+The 
+\series bold
+Middle East
+\series default
+ region is the hot zone of terrorism in the world with 
+\series bold
+Iraq
+\series default
+ being the most active one in this region (and across the globe).
+\end_layout
+
+\begin_layout Itemize
+Since 2014, the overall terror activity across the globe has decreased significa
+ntly.
+\end_layout
+
+\end_body
+\end_document
